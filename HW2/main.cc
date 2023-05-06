@@ -7,9 +7,37 @@
 
 using namespace std;
 
-void strong_matrix();
-void strong_list();
-void strong_array();
+void strong_matrix(){;}
+void strong_list(){;}
+void strong_array(){;}
+
+class Node {
+private:
+    int data;
+    Node* next;
+public:
+    Node(int newData, Node* newNext) {
+        data = newData;
+        next = newNext;
+    }
+    void setData(int newData) {
+        data = newData;
+    }
+    void setNext(Node* newNext) {
+        next = newNext;
+    }
+};
+
+class Node_Array {
+private:
+    int cnt = 0;
+    vector<int> data;
+public:
+    void insertNode(int node){
+        data.push_back(node);
+        cnt++;
+    }
+};
 
 int main(int argc, char *argv[]){
     string buf = "";
@@ -86,6 +114,20 @@ int main(int argc, char *argv[]){
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
+            // declare adjacency-list
+            vector<Node*> adjacency_list(node_cnt, NULL);
+
+            // fill adjacency-list
+            while(getline(input_file, buf)){
+                // process the edges
+                int from_node = stoi(buf.substr(0, buf.find(' ')));
+                int to_node = stoi(buf.substr(buf.find(' ') + 1));
+
+                // fill list
+                Node* newNode = new Node(to_node, adjacency_list[from_node]);
+                adjacency_list[from_node] = newNode;
+            }
+
             // run algorithm
             strong_list();
 
@@ -115,6 +157,19 @@ int main(int argc, char *argv[]){
         else if (stoi(argv[1]) == 3){
             // clock start
             auto start = chrono::high_resolution_clock::now();
+
+            // declare adjacency-array
+            vector<Node_Array*> adjacency_array(node_cnt, NULL);
+
+            // fill adjacency-list
+            while(getline(input_file, buf)){
+                // process the edges
+                int from_node = stoi(buf.substr(0, buf.find(' ')));
+                int to_node = stoi(buf.substr(buf.find(' ') + 1));
+
+                // fill array
+                adjacency_array[from_node]->insertNode(to_node);
+            }
 
             // run algorithm
             strong_array();
