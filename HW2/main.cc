@@ -36,20 +36,25 @@ int main(int argc, char *argv[]){
         int edge_cnt = stoi(buf);
 
         // clear buffer string
-        buf.clear();
-        
-        while(getline(input_file, buf)){
-            // process the edges
-        }
-        
-        // close input file
-        input_file.close();
+        buf.clear();    
 
         // adjacency-matrix
         if (stoi(argv[1]) == 1){
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
+            // declare adjacency-matrix
+            vector<vector<bool>> adjacency_matrix(node_cnt, vector<bool>(node_cnt, false));
+
+            // fill adjacency-matrix
+            while(getline(input_file, buf)){
+                // process the edges
+                int from_node = stoi(buf.substr(0, buf.find(' ')));
+                int to_node = stoi(buf.substr(buf.find(' ') + 1));
+                // fill matrix
+                adjacency_matrix[from_node][to_node] = true;
+            }
+            
             // run algorithm
             strong_matrix();
 
@@ -140,6 +145,9 @@ int main(int argc, char *argv[]){
         else{
             return 0;
         }
+
+        // close input file
+        input_file.close();
     }
     // invalid argument number
     else{
