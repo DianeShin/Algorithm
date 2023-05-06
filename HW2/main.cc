@@ -71,16 +71,18 @@ int main(int argc, char *argv[]){
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
-            // declare adjacency-matrix
+            // declare adjacency-matrix and transpose
             vector<vector<bool>> adjacency_matrix(node_cnt, vector<bool>(node_cnt, false));
+            vector<vector<bool>> adjacency_matrix_T(node_cnt, vector<bool>(node_cnt, false));
 
-            // fill adjacency-matrix
+            // fill adjacency-matrix and transpose
             while(getline(input_file, buf)){
                 // process the edges
                 int from_node = stoi(buf.substr(0, buf.find(' ')));
                 int to_node = stoi(buf.substr(buf.find(' ') + 1));
                 // fill matrix
                 adjacency_matrix[from_node][to_node] = true;
+                adjacency_matrix[to_node][from_node] = true;
             }
             
             // run algorithm
@@ -114,10 +116,11 @@ int main(int argc, char *argv[]){
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
-            // declare adjacency-list
+            // declare adjacency-list and transpose
             vector<Node*> adjacency_list(node_cnt, NULL);
+            vector<Node*> adjacency_list_T(node_cnt, NULL);
 
-            // fill adjacency-list
+            // fill adjacency-list and transpose
             while(getline(input_file, buf)){
                 // process the edges
                 int from_node = stoi(buf.substr(0, buf.find(' ')));
@@ -126,6 +129,10 @@ int main(int argc, char *argv[]){
                 // fill list
                 Node* newNode = new Node(to_node, adjacency_list[from_node]);
                 adjacency_list[from_node] = newNode;
+
+                // fill list transpose
+                Node* newNode = new Node(from_node, adjacency_list_T[to_node]);
+                adjacency_list[to_node] = newNode;
             }
 
             // run algorithm
@@ -158,10 +165,11 @@ int main(int argc, char *argv[]){
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
-            // declare adjacency-array
+            // declare adjacency-array and transpose
             vector<Node_Array*> adjacency_array(node_cnt, NULL);
+            vector<Node_Array*> adjacency_array_T(node_cnt, NULL);
 
-            // fill adjacency-list
+            // fill adjacency-list and trnaspose
             while(getline(input_file, buf)){
                 // process the edges
                 int from_node = stoi(buf.substr(0, buf.find(' ')));
@@ -169,6 +177,7 @@ int main(int argc, char *argv[]){
 
                 // fill array
                 adjacency_array[from_node]->insertNode(to_node);
+                adjacency_array_T[to_node]->insertNode(from_node);
             }
 
             // run algorithm
