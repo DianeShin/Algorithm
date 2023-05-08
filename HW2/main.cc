@@ -7,9 +7,21 @@
 
 using namespace std;
 
-void strong_matrix(){;}
-void strong_list(){;}
-void strong_array(){;}
+void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> &adjacency_matrix_T){
+    // initialize visited vector
+    vector<bool> visited(adjacency_matrix.size(), false);
+    vector<bool> visited_T(adjacency_matrix.size(), false);
+}
+void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_array_T){
+    // initialize visited vector
+    vector<bool> visited(adjacency_list.size(), false);
+    vector<bool> visited_T(adjacency_list.size(), false);
+}
+void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &adjacency_array_T){
+    // initialize visited vector
+    vector<bool> visited(adjacency_array.size(), false);
+    vector<bool> visited_T(adjacency_array.size(), false);
+}
 
 class Node {
 private:
@@ -48,10 +60,7 @@ public:
     }
 };
 
-void DFS_matrix(vector<vector<bool>> &adjacency_matrix){
-    // initialize visited vector
-    vector<bool> visited(adjacency_matrix.size(), false);
-
+void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited){
     // initialize values
     int time = 0;
     vector<int> time_vector(adjacency_matrix.size(), 0);
@@ -62,9 +71,7 @@ void DFS_matrix(vector<vector<bool>> &adjacency_matrix){
     }
     
 }
-void DFS_array(vector<Node_Array *> &adjacency_array){
-    vector<bool> visited;
-
+void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited){
     // initialize values
     int time = 0;
     vector<int> time_vector(adjacency_array.size(), 0);
@@ -76,8 +83,6 @@ void DFS_array(vector<Node_Array *> &adjacency_array){
 }
 
 void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited){
-    vector<bool> visited;
-
     // initialize values
     int time = 0;
     vector<int> time_vector(adjacency_list.size(), 0);
@@ -190,7 +195,7 @@ int main(int argc, char *argv[]){
             }
             
             // run algorithm
-            strong_matrix();
+            strong_matrix(adjacency_matrix, adjacency_matrix_T);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
@@ -240,7 +245,7 @@ int main(int argc, char *argv[]){
             }
 
             // run algorithm
-            strong_list();
+            strong_list(adjacency_list, adjacency_list_T);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
@@ -285,7 +290,7 @@ int main(int argc, char *argv[]){
             }
 
             // run algorithm
-            strong_array();
+            strong_array(adjacency_array, adjacency_array_T);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
