@@ -6,23 +6,6 @@
 #include <chrono>
 
 using namespace std;
-
-void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> &adjacency_matrix_T){
-    // initialize visited vector
-    vector<bool> visited(adjacency_matrix.size(), false);
-    vector<bool> visited_T(adjacency_matrix.size(), false);
-}
-void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_array_T){
-    // initialize visited vector
-    vector<bool> visited(adjacency_list.size(), false);
-    vector<bool> visited_T(adjacency_list.size(), false);
-}
-void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &adjacency_array_T){
-    // initialize visited vector
-    vector<bool> visited(adjacency_array.size(), false);
-    vector<bool> visited_T(adjacency_array.size(), false);
-}
-
 class Node {
 private:
     int data;
@@ -60,39 +43,23 @@ public:
     }
 };
 
-void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited){
-    // initialize values
-    int time = 0;
-    vector<int> time_vector(adjacency_matrix.size(), 0);
-
-    // visit other nodes
-    for (int index = 1; index < adjacency_matrix.size(); index++){
-        if (visited[index] = false) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
-    }
-    
-}
-void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited){
-    // initialize values
-    int time = 0;
-    vector<int> time_vector(adjacency_array.size(), 0);
-
-    // visit other nodes
-    for (int index = 1; index < adjacency_array.size(); index++){
-        if (visited[index] = false) DFS_array_a(adjacency_array, visited, time_vector, time, index);
-    }
+void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> &adjacency_matrix_T){
+    // initialize visited vector
+    vector<bool> visited(adjacency_matrix.size(), false);
+    vector<bool> visited_T(adjacency_matrix.size(), false);
 }
 
-void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited){
-    // initialize values
-    int time = 0;
-    vector<int> time_vector(adjacency_list.size(), 0);
-
-    // visit other nodes
-    for (int index = 1; index < adjacency_list.size(); index++){
-        if (visited[index] = false) DFS_list_a(adjacency_list, visited, time_vector, time, index);
-    }
+void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_array_T){
+    // initialize visited vector
+    vector<bool> visited(adjacency_list.size(), false);
+    vector<bool> visited_T(adjacency_list.size(), false);
 }
 
+void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &adjacency_array_T){
+    // initialize visited vector
+    vector<bool> visited(adjacency_array.size(), false);
+    vector<bool> visited_T(adjacency_array.size(), false);
+}
 
 void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector, int time, int node){
     // d[v]
@@ -129,7 +96,6 @@ void DFS_array_a(vector<Node_Array*> &adjacency_array, vector<bool> &visited, ve
     time_vector[node] = ++time;
 }
 
-
 void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector, int time, int node){
     // d[v]
     ++time;
@@ -146,6 +112,41 @@ void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<in
     // set time vector
     time_vector[node] = ++time;
 }
+
+void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited){
+    // initialize values
+    int time = 0;
+    vector<int> time_vector(adjacency_matrix.size(), 0);
+
+    // visit other nodes
+    for (int index = 1; index < adjacency_matrix.size(); index++){
+        if (visited[index] = false) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
+    }
+    
+}
+void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited){
+    // initialize values
+    int time = 0;
+    vector<int> time_vector(adjacency_array.size(), 0);
+
+    // visit other nodes
+    for (int index = 1; index < adjacency_array.size(); index++){
+        if (visited[index] = false) DFS_array_a(adjacency_array, visited, time_vector, time, index);
+    }
+}
+
+void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited){
+    // initialize values
+    int time = 0;
+    vector<int> time_vector(adjacency_list.size(), 0);
+
+    // visit other nodes
+    for (int index = 1; index < adjacency_list.size(); index++){
+        if (visited[index] = false) DFS_list_a(adjacency_list, visited, time_vector, time, index);
+    }
+}
+
+
 
 
 int main(int argc, char *argv[]){
@@ -240,7 +241,7 @@ int main(int argc, char *argv[]){
                 adjacency_list[from_node] = newNode;
 
                 // fill list transpose
-                Node* newNode = new Node(from_node, adjacency_list_T[to_node]);
+                Node* newNode_T = new Node(from_node, adjacency_list_T[to_node]);
                 adjacency_list[to_node] = newNode;
             }
 
