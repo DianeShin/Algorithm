@@ -26,6 +26,12 @@ public:
     void setNext(Node* newNext) {
         next = newNext;
     }
+    int getData() {
+        return data;
+    }
+    Node* getNext() {
+        return next;
+    }
 };
 
 class Node_Array {
@@ -37,7 +43,105 @@ public:
         data.push_back(node);
         cnt++;
     }
+    vector<int>& getArray(){
+        return data;
+    }
 };
+
+void DFS_matrix(vector<vector<bool>> &adjacency_matrix){
+    // initialize visited vector
+    vector<bool> visited(adjacency_matrix.size(), false);
+
+    // initialize values
+    int time = 0;
+    vector<int> time_vector(adjacency_matrix.size(), 0);
+
+    // visit other nodes
+    for (int index = 1; index < adjacency_matrix.size(); index++){
+        if (visited[index] = false) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
+    }
+    
+}
+void DFS_array(vector<Node_Array *> &adjacency_array){
+    vector<bool> visited;
+
+    // initialize values
+    int time = 0;
+    vector<int> time_vector(adjacency_array.size(), 0);
+
+    // visit other nodes
+    for (int index = 1; index < adjacency_array.size(); index++){
+        if (visited[index] = false) DFS_array_a(adjacency_array, visited, time_vector, time, index);
+    }
+}
+
+void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited){
+    vector<bool> visited;
+
+    // initialize values
+    int time = 0;
+    vector<int> time_vector(adjacency_list.size(), 0);
+
+    // visit other nodes
+    for (int index = 1; index < adjacency_list.size(); index++){
+        if (visited[index] = false) DFS_list_a(adjacency_list, visited, time_vector, time, index);
+    }
+}
+
+
+void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector, int time, int node){
+    // d[v]
+    ++time;
+
+    // set visited node
+    visited[node] = true;
+
+    // visit adjacent vertices
+    for (auto adj_node : adjacency_matrix.at(node + 1)){
+        if (adjacency_matrix[node][adj_node] == false) continue;
+        else{
+            if (visited[adj_node] == false) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, adj_node);
+        }
+    }
+    
+    // set time vector
+    time_vector[node] = ++time;
+}
+
+void DFS_array_a(vector<Node_Array*> &adjacency_array, vector<bool> &visited, vector<int> &time_vector, int time, int node){
+    // d[v]
+    ++time;
+
+    // set visited node
+    visited[node] = true;
+
+    // visit adjacent vertices
+    for (auto adj_node : adjacency_array.at(node + 1)->getArray()){
+        if (visited[adj_node] == false) DFS_array_a(adjacency_array, visited, time_vector, time, adj_node);
+    }
+    
+    // set time vector
+    time_vector[node] = ++time;
+}
+
+
+void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector, int time, int node){
+    // d[v]
+    ++time;
+
+    // set visited node
+    visited[node] = true;
+
+    // visit adjacent vertices
+    Node * currNode = adjacency_list.at(node + 1)->getNext();
+    while (currNode != nullptr){
+        if (visited[currNode->getData()] == false) DFS_list_a(adjacency_list, visited, time_vector, time, currNode->getData());
+    }
+    
+    // set time vector
+    time_vector[node] = ++time;
+}
+
 
 int main(int argc, char *argv[]){
     string buf = "";
@@ -72,8 +176,8 @@ int main(int argc, char *argv[]){
             auto start = chrono::high_resolution_clock::now();
 
             // declare adjacency-matrix and transpose
-            vector<vector<bool>> adjacency_matrix(node_cnt, vector<bool>(node_cnt, false));
-            vector<vector<bool>> adjacency_matrix_T(node_cnt, vector<bool>(node_cnt, false));
+            vector<vector<bool>> adjacency_matrix(node_cnt + 1, vector<bool>(node_cnt + 1, false));
+            vector<vector<bool>> adjacency_matrix_T(node_cnt + 1, vector<bool>(node_cnt + 1, false));
 
             // fill adjacency-matrix and transpose
             while(getline(input_file, buf)){
@@ -117,8 +221,8 @@ int main(int argc, char *argv[]){
             auto start = chrono::high_resolution_clock::now();
 
             // declare adjacency-list and transpose
-            vector<Node*> adjacency_list(node_cnt, NULL);
-            vector<Node*> adjacency_list_T(node_cnt, NULL);
+            vector<Node*> adjacency_list(node_cnt + 1, NULL);
+            vector<Node*> adjacency_list_T(node_cnt + 1, NULL);
 
             // fill adjacency-list and transpose
             while(getline(input_file, buf)){
@@ -166,8 +270,8 @@ int main(int argc, char *argv[]){
             auto start = chrono::high_resolution_clock::now();
 
             // declare adjacency-array and transpose
-            vector<Node_Array*> adjacency_array(node_cnt, NULL);
-            vector<Node_Array*> adjacency_array_T(node_cnt, NULL);
+            vector<Node_Array*> adjacency_array(node_cnt + 1, NULL);
+            vector<Node_Array*> adjacency_array_T(node_cnt + 1, NULL);
 
             // fill adjacency-list and trnaspose
             while(getline(input_file, buf)){
