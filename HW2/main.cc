@@ -5,6 +5,7 @@
 #include <iostream>
 #include <chrono>
 #include <limits.h>
+#include <queue>
 
 using namespace std;
 
@@ -45,6 +46,37 @@ public:
     }
 };
 
+struct compare{
+    vector<int> &time_vector;
+
+    // Constructor
+    compare(vector<int> &t_v) : time_vector(t_v){}
+
+    // Operator definition
+    bool operator()(int node1, int node2) {
+        return time_vector[node1] > time_vector[node2];
+    }
+};
+
+void reverse_sort_time_vector(vector<int> &time_vector, vector<int> &reverse_node_vector){
+    compare comp(time_vector);
+
+    // init min_heap
+    priority_queue<int, vector<int>, compare> min_heap(comp);
+
+    // create min_heap
+    for (int node = 1; node < time_vector.size(); node++){
+        min_heap.push(node);
+    }
+
+    // fill reverse_node_vector
+    while (!min_heap.empty()){
+        int node = min_heap.top();
+        min_heap.pop();
+        reverse_node_vector.push_back(node);
+    }
+}
+
 void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> &adjacency_matrix_T){
     // initialize visited vector
     vector<bool> visited(adjacency_matrix.size(), false);
@@ -54,9 +86,14 @@ void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> 
     vector<int> time_vector(adjacency_matrix.size(), INT_MAX);
     vector<int> time_vector_T(adjacency_matrix.size(), INT_MAX);
 
+    // initialize node_vector
+    vector<int> reverse_node_vector;
+
     // run DFS
     DFS_matrix(adjacency_matrix, visited, time_vector);
-    DFS_matrix(adjacency_matrix_T, visited_T, time_vector_T);
+
+    // fill reverse_node_vector
+    reverse_sort_time_vector(time_vector, reverse_node_vector);
 }
 
 void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_list_T){
@@ -68,9 +105,14 @@ void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_list_
     vector<int> time_vector(adjacency_list.size(), INT_MAX);
     vector<int> time_vector_T(adjacency_list.size(), INT_MAX);
 
+    // initialize node_vector
+    vector<int> reverse_node_vector;
+
     // run DFS
     DFS_list(adjacency_list, visited, time_vector);
-    DFS_list(adjacency_list_T, visited_T, time_vector_T);
+
+    // fill reverse_node_vector
+    reverse_sort_time_vector(time_vector, reverse_node_vector);
 }
 
 void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &adjacency_array_T){
@@ -82,9 +124,14 @@ void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &a
     vector<int> time_vector(adjacency_array.size(), INT_MAX);
     vector<int> time_vector_T(adjacency_array.size(), INT_MAX);
 
+    // initialize node_vector
+    vector<int> reverse_node_vector;
+    
     // run DFS
     DFS_array(adjacency_array, visited, time_vector);
-    DFS_array(adjacency_array_T, visited_T, time_vector_T);
+
+    // fill reverse_node_vector
+    reverse_sort_time_vector(time_vector, reverse_node_vector);
 }
 
 void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector, int time, int node){
