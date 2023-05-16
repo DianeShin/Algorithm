@@ -37,14 +37,17 @@ public:
 class Node_Array {
 private:
     int cnt = 0;
-    vector<int> data;
+    vector<int> array;
 public:
+    Node_Array() {}
+
     void insertNode(int node){
-        data.push_back(node);
+        array.push_back(node);
         cnt++;
     }
+    
     vector<int>& getArray(){
-        return data;
+        return array;
     }
 };
 
@@ -62,6 +65,15 @@ void print_adj_list(vector<Node *> &vec){
             cout << currNode->getData() << ' ';
             currNode = currNode->getNext();
         }  
+        cout << endl;    
+    }
+}
+
+void print_adj_array(vector<Node_Array *> &vec){
+    for (int i = 1; i < vec.size(); i++){
+        cout << "from : " << i << " to :";
+        vector<int> currNode = vec[i]->getArray();
+        for (int iter : currNode) cout << iter << ' ';
         cout << endl;    
     }
 }
@@ -100,7 +112,7 @@ void reverse_sort_time_vector(vector<int> &time_vector, vector<int> &reverse_nod
     }
 }
 
-void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector, int time, int node){
+void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
     // d[v]
     ++time;
 
@@ -119,23 +131,7 @@ void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited,
     time_vector[node] = ++time;
 }
 
-void DFS_array_a(vector<Node_Array*> &adjacency_array, vector<bool> &visited, vector<int> &time_vector, int time, int node){
-    // d[v]
-    ++time;
-
-    // set visited node
-    visited[node] = true;
-
-    // visit adjacent vertices
-    for (auto adj_node : adjacency_array.at(node + 1)->getArray()){
-        if (visited[adj_node] == false) DFS_array_a(adjacency_array, visited, time_vector, time, adj_node);
-    }
-    
-    // set time vector
-    time_vector[node] = ++time;
-}
-
-void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector, int time, int node){
+void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
     // d[v]
     ++time;
 
@@ -153,6 +149,23 @@ void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<in
     time_vector[node] = ++time;
 }
 
+void DFS_array_a(vector<Node_Array*> &adjacency_array, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
+    // f[v]
+    ++time;    
+    
+    // set visited node
+    visited[node] = true;
+
+    // visit adjacent vertices
+    for (auto adj_node : adjacency_array.at(node)->getArray()){
+        // recursive 
+        if (visited[adj_node] == false) DFS_array_a(adjacency_array, visited, time_vector, time, adj_node);
+    }
+    
+    // set time vector
+    time_vector[node] = ++time;
+}
+
 void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector){
     // initialize values
     int time = 0;
@@ -164,16 +177,6 @@ void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, v
     
 }
 
-void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited, vector<int> &time_vector){
-    // initialize values
-    int time = 0;
-
-    // visit other nodes
-    for (int index = 1; index < adjacency_array.size(); index++){
-        if (visited[index] = false) DFS_array_a(adjacency_array, visited, time_vector, time, index);
-    }
-}
-
 void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector){
     // initialize values
     int time = 0;
@@ -181,6 +184,16 @@ void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int>
     // visit other nodes
     for (int index = 1; index < adjacency_list.size(); index++){
         if (visited[index] == false) DFS_list_a(adjacency_list, visited, time_vector, time, index);
+    }
+}
+
+void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited, vector<int> &time_vector){
+    // initialize values
+    int time = 0;
+
+    // visit other nodes
+    for (int index = 1; index < adjacency_array.size(); index++){
+        if (visited[index] == false) DFS_array_a(adjacency_array, visited, time_vector, time, index);
     }
 }
 
@@ -217,28 +230,30 @@ void DFS_list_a_scc(vector<Node *> &adjacency_list, vector<bool> &visited, int n
     
     while (currNode != nullptr){
         if (visited[currNode->getData()] == false){
-            DFS_list_a_scc(adjacency_list, visited,currNode->getData(), scc);
+            DFS_list_a_scc(adjacency_list, visited, currNode->getData(), scc);
             break;
         } 
         currNode = currNode->getNext();
     }
 }
 
-void DFS_array_a_scc(vector<Node_Array*> &adjacency_array, vector<bool> &visited, int node, int &scc){
+int DFS_array_a_scc(vector<Node_Array*> &adjacency_array, vector<bool> &visited, int node){
+    cout << "visited node : " << node << endl;
+    // initialize result
+    int result = node;
+    
     // set visited node
     visited[node] = true;
 
-    // perform xor with scc
-    if (scc == -1) scc = node;
-    else scc ^= node;
-
     // visit adjacent vertices
-    for (auto adj_node : adjacency_array.at(node + 1)->getArray()){
-        if (visited[adj_node] == false){
-            DFS_array_a_scc(adjacency_array, visited, adj_node, scc);
-            break;
+    for (auto adj_node : adjacency_array.at(node)->getArray()){
+        if (!visited[adj_node]){ 
+            result ^= DFS_array_a_scc(adjacency_array, visited, adj_node);
         } 
     }
+
+    // return result
+    return result;
 }
 
 void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> &adjacency_matrix_T, vector<int> &result){
@@ -321,7 +336,6 @@ void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &a
 
     // initialize time_vector
     vector<int> time_vector(adjacency_array.size(), INT_MAX);
-    vector<int> time_vector_T(adjacency_array.size(), INT_MAX);
 
     // initialize node_vector
     vector<int> reverse_node_vector;
@@ -331,19 +345,17 @@ void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &a
 
     // fill reverse_node_vector
     reverse_sort_time_vector(time_vector, reverse_node_vector);
+    print_vect(time_vector);
+    print_vect(reverse_node_vector);
 
     // run DFS on G_T -> create SCC
     for (int index = 1; index < reverse_node_vector.size(); index++){
         // if not visited
-        if (visited_T[index] == false){
-            // initialize scc value(xor of scc nodes)
-            int scc = -1;
-            
+        if (!visited_T[reverse_node_vector[index]]){
             // perform DFS
-            DFS_array_a_scc(adjacency_array_T, visited_T, index, scc);
-            
-            // push back result
-            result.push_back(scc);
+            cout << "start" << endl;
+            result.push_back(DFS_array_a_scc(adjacency_array_T, visited_T, reverse_node_vector[index]));
+            cout << "end" << endl;
         }
     }
 
@@ -377,7 +389,6 @@ int main(int argc, char *argv[]){
 
         // clear buffer string
         buf.clear();    
-
 
         // initialize result vector
         vector<int> result;
@@ -488,14 +499,21 @@ int main(int argc, char *argv[]){
             // return
             return 0;           
         }
+        
         // adjacency-array
         else if (stoi(argv[1]) == 3){
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
-            // declare adjacency-array and transpose
-            vector<Node_Array*> adjacency_array(node_cnt + 1, NULL);
-            vector<Node_Array*> adjacency_array_T(node_cnt + 1, NULL);
+            // declare adjacency_array and transpose
+            vector<Node_Array*> adjacency_array(node_cnt + 1);
+            vector<Node_Array*> adjacency_array_T(node_cnt + 1);
+
+            // initialize adjacency_array and transpose
+            for (int index = 1; index <= node_cnt; index++){
+                adjacency_array[index] = new Node_Array();
+                adjacency_array_T[index] = new Node_Array();
+            }
 
             // fill adjacency-list and trnaspose
             while(getline(input_file, buf)){
