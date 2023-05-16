@@ -132,7 +132,7 @@ void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited,
 }
 
 void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
-    // d[v]
+    // f[v]
     ++time;
 
     // set visited node
@@ -183,7 +183,7 @@ void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int>
 
     // visit other nodes
     for (int index = 1; index < adjacency_list.size(); index++){
-        if (visited[index] == false) DFS_list_a(adjacency_list, visited, time_vector, time, index);
+        if (!visited[index]) DFS_list_a(adjacency_list, visited, time_vector, time, index);
     }
 }
 
@@ -193,7 +193,7 @@ void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited, vec
 
     // visit other nodes
     for (int index = 1; index < adjacency_array.size(); index++){
-        if (visited[index] == false) DFS_array_a(adjacency_array, visited, time_vector, time, index);
+        if (!visited[index]) DFS_array_a(adjacency_array, visited, time_vector, time, index);
     }
 }
 
@@ -217,28 +217,26 @@ void DFS_matrix_a_scc(vector<vector<bool>> &adjacency_matrix, vector<bool> &visi
     }
 }
 
-void DFS_list_a_scc(vector<Node *> &adjacency_list, vector<bool> &visited, int node, int &scc){
+int DFS_list_a_scc(vector<Node *> &adjacency_list, vector<bool> &visited, int node){
+    // initialize result
+    int result = node;
+
     // set visited node
     visited[node] = true;
-
-    // perform xor with scc
-    if (scc == -1) scc = node;
-    else scc ^= node;
 
     // visit adjacent vertices
     Node * currNode = adjacency_list[node]->getNext();
     
     while (currNode != nullptr){
-        if (visited[currNode->getData()] == false){
-            DFS_list_a_scc(adjacency_list, visited, currNode->getData(), scc);
-            break;
-        } 
+        if (!visited[currNode->getData()]) result ^= DFS_list_a_scc(adjacency_list, visited, currNode->getData());
         currNode = currNode->getNext();
     }
+
+    // return result
+    return result;  
 }
 
 int DFS_array_a_scc(vector<Node_Array*> &adjacency_array, vector<bool> &visited, int node){
-    cout << "visited node : " << node << endl;
     // initialize result
     int result = node;
     
@@ -247,9 +245,7 @@ int DFS_array_a_scc(vector<Node_Array*> &adjacency_array, vector<bool> &visited,
 
     // visit adjacent vertices
     for (auto adj_node : adjacency_array.at(node)->getArray()){
-        if (!visited[adj_node]){ 
-            result ^= DFS_array_a_scc(adjacency_array, visited, adj_node);
-        } 
+        if (!visited[adj_node]) result ^= DFS_array_a_scc(adjacency_array, visited, adj_node);
     }
 
     // return result
@@ -313,15 +309,9 @@ void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_list_
     // run DFS on G_T -> create SCC
     for (int index = 1; index < reverse_node_vector.size(); index++){
         // if not visited
-        if (visited_T[reverse_node_vector[index]] == false){
-            // initialize scc value(xor of scc nodes)
-            int scc = -1;
-            
+        if (!visited_T[reverse_node_vector[index]]){
             // perform DFS
-            DFS_list_a_scc(adjacency_list_T, visited_T, reverse_node_vector[index], scc);
-            
-            // push back result
-            result.push_back(scc);
+            result.push_back(DFS_list_a_scc(adjacency_list_T, visited_T, reverse_node_vector[index]));
         }
     }
 
@@ -345,17 +335,13 @@ void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &a
 
     // fill reverse_node_vector
     reverse_sort_time_vector(time_vector, reverse_node_vector);
-    print_vect(time_vector);
-    print_vect(reverse_node_vector);
 
     // run DFS on G_T -> create SCC
     for (int index = 1; index < reverse_node_vector.size(); index++){
         // if not visited
         if (!visited_T[reverse_node_vector[index]]){
             // perform DFS
-            cout << "start" << endl;
             result.push_back(DFS_array_a_scc(adjacency_array_T, visited_T, reverse_node_vector[index]));
-            cout << "end" << endl;
         }
     }
 
