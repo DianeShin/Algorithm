@@ -51,6 +51,7 @@ public:
     }
 };
 
+/* print methods for debugging
 void print_vect(vector<int>& vec){
     for (int i = 1; i < vec.size(); i++){
         cout << vec[i] << ' ';
@@ -90,7 +91,9 @@ void print_adj_matrix(vector<vector<bool>> &vec){
         print_vect_bool(vec[i]);
     }
 }
+*/
 
+// compare method for max heap construction
 struct compare{
     vector<int> &time_vector;
 
@@ -103,6 +106,7 @@ struct compare{
     }
 };
 
+// sort nodes in reverse finish time order
 void reverse_sort_time_vector(vector<int> &time_vector, vector<int> &reverse_node_vector){
     compare comp(time_vector);
 
@@ -125,6 +129,7 @@ void reverse_sort_time_vector(vector<int> &time_vector, vector<int> &reverse_nod
     }
 }
 
+// aDFS for matrix
 void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
     // f[v]
     ++time;
@@ -134,16 +139,15 @@ void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited,
 
     // visit adjacent vertices
     for (int index = 1; index < adjacency_matrix.size(); index++){
-        if (adjacency_matrix[node][index] == false) continue;
-        else{
-            if (!visited[index]) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
-        }        
+        if (!adjacency_matrix[node][index]) continue;
+        else if (!visited[index]) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);    
     }
     
     // set time vector
     time_vector[node] = ++time;
 }
 
+// aDFS for list
 void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
     // f[v]
     ++time;
@@ -162,6 +166,7 @@ void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<in
     time_vector[node] = ++time;
 }
 
+// aDFS for array
 void DFS_array_a(vector<Node_Array*> &adjacency_array, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
     // f[v]
     ++time;    
@@ -172,13 +177,14 @@ void DFS_array_a(vector<Node_Array*> &adjacency_array, vector<bool> &visited, ve
     // visit adjacent vertices
     for (auto adj_node : adjacency_array.at(node)->getArray()){
         // recursive 
-        if (visited[adj_node] == false) DFS_array_a(adjacency_array, visited, time_vector, time, adj_node);
+        if (!visited[adj_node]) DFS_array_a(adjacency_array, visited, time_vector, time, adj_node);
     }
     
     // set time vector
     time_vector[node] = ++time;
 }
 
+// DFS for matrix
 void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector){
     // initialize values
     int time = 0;
@@ -187,9 +193,10 @@ void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, v
     for (int index = 1; index < adjacency_matrix.size(); index++){
         if (!visited[index]) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
     }
-    
+
 }
 
+// DFS for list
 void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int> &time_vector){
     // initialize values
     int time = 0;
@@ -200,6 +207,7 @@ void DFS_list(vector<Node *> &adjacency_list, vector<bool> &visited, vector<int>
     }
 }
 
+// DFS for array
 void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited, vector<int> &time_vector){
     // initialize values
     int time = 0;
@@ -210,6 +218,7 @@ void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited, vec
     }
 }
 
+// DFS for G_T
 int DFS_matrix_a_scc(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, int node){
     // initialize result
     int result = node;
@@ -219,9 +228,9 @@ int DFS_matrix_a_scc(vector<vector<bool>> &adjacency_matrix, vector<bool> &visit
 
     // visit adjacent vertices
     for (int index = 1; index < adjacency_matrix.size(); index++){
-        if (adjacency_matrix[node][index] == false) continue;
+        if (!adjacency_matrix[node][index]) continue;
         else{
-            if (visited[index] == false){
+            if (!visited[index]){
                 result ^= DFS_matrix_a_scc(adjacency_matrix, visited, index);
             } 
         }        
@@ -230,6 +239,8 @@ int DFS_matrix_a_scc(vector<vector<bool>> &adjacency_matrix, vector<bool> &visit
     return result;
 }
 
+
+// DFS for G_T
 int DFS_list_a_scc(vector<Node *> &adjacency_list, vector<bool> &visited, int node){
     // initialize result
     int result = node;
@@ -249,6 +260,7 @@ int DFS_list_a_scc(vector<Node *> &adjacency_list, vector<bool> &visited, int no
     return result;  
 }
 
+// DFS for G_T
 int DFS_array_a_scc(vector<Node_Array*> &adjacency_array, vector<bool> &visited, int node){
     // initialize result
     int result = node;
@@ -265,6 +277,7 @@ int DFS_array_a_scc(vector<Node_Array*> &adjacency_array, vector<bool> &visited,
     return result;
 }
 
+// find SCC for matrix
 void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> &adjacency_matrix_T, vector<int> &result){
     // initialize visited vector
     vector<bool> visited(adjacency_matrix.size(), false);
@@ -295,6 +308,7 @@ void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> 
     sort(result.begin(), result.end());
 }
 
+// find SCC for list
 void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_list_T, vector<int> &result){
     // initialize visited vector
     vector<bool> visited(adjacency_list.size(), false);
@@ -325,6 +339,7 @@ void strong_list(vector<Node *> &adjacency_list, vector<Node *> &adjacency_list_
     sort(result.begin(), result.end());
 }
 
+// find SCC for array
 void strong_array(vector<Node_Array *> &adjacency_array, vector<Node_Array *> &adjacency_array_T, vector<int> &result){
     // initialize visited vector
     vector<bool> visited(adjacency_array.size(), false);
@@ -399,6 +414,7 @@ int main(int argc, char *argv[]){
                 // process the edges
                 int from_node = stoi(buf.substr(0, buf.find(' ')));
                 int to_node = stoi(buf.substr(buf.find(' ') + 1));
+
                 // fill matrix
                 adjacency_matrix[from_node][to_node] = true;
                 adjacency_matrix_T[to_node][from_node] = true;
