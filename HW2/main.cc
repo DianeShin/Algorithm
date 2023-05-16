@@ -58,6 +58,13 @@ void print_vect(vector<int>& vec){
     cout << endl;
 }
 
+void print_vect_bool(vector<bool>& vec){
+    for (int i = 1; i < vec.size(); i++){
+        cout << vec[i] << ' ';
+    }
+    cout << endl;
+}
+
 void print_adj_list(vector<Node *> &vec){
     for (int i = 1; i < vec.size(); i++){
         Node * currNode = vec[i];
@@ -75,6 +82,12 @@ void print_adj_array(vector<Node_Array *> &vec){
         vector<int> currNode = vec[i]->getArray();
         for (int iter : currNode) cout << iter << ' ';
         cout << endl;    
+    }
+}
+
+void print_adj_matrix(vector<vector<bool>> &vec){
+    for (int i = 1; i < vec.size(); i++){
+        print_vect_bool(vec[i]);
     }
 }
 
@@ -113,18 +126,18 @@ void reverse_sort_time_vector(vector<int> &time_vector, vector<int> &reverse_nod
 }
 
 void DFS_matrix_a(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, vector<int> &time_vector, int &time, int node){
-    // d[v]
+    // f[v]
     ++time;
 
     // set visited node
     visited[node] = true;
 
     // visit adjacent vertices
-    for (auto adj_node : adjacency_matrix.at(node + 1)){
-        if (adjacency_matrix[node][adj_node] == false) continue;
+    for (int index = 1; index < adjacency_matrix.size(); index++){
+        if (adjacency_matrix[node][index] == false) continue;
         else{
-            if (visited[adj_node] == false) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, adj_node);
-        }
+            if (!visited[index]) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
+        }        
     }
     
     // set time vector
@@ -141,7 +154,7 @@ void DFS_list_a(vector<Node *> &adjacency_list, vector<bool> &visited, vector<in
     // visit adjacent vertices
     Node * currNode = adjacency_list[node]->getNext();
     while (currNode != nullptr){
-        if (visited[currNode->getData()] == false) DFS_list_a(adjacency_list, visited, time_vector, time, currNode->getData());
+        if (!visited[currNode->getData()]) DFS_list_a(adjacency_list, visited, time_vector, time, currNode->getData());
         currNode = currNode->getNext();
     }
     
@@ -172,7 +185,7 @@ void DFS_matrix(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, v
 
     // visit other nodes
     for (int index = 1; index < adjacency_matrix.size(); index++){
-        if (visited[index] = false) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
+        if (!visited[index]) DFS_matrix_a(adjacency_matrix, visited, time_vector, time, index);
     }
     
 }
@@ -197,24 +210,24 @@ void DFS_array(vector<Node_Array *> &adjacency_array, vector<bool> &visited, vec
     }
 }
 
-void DFS_matrix_a_scc(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, int node, int &scc){
+int DFS_matrix_a_scc(vector<vector<bool>> &adjacency_matrix, vector<bool> &visited, int node){
+    // initialize result
+    int result = node;
+    
     // set visited node
     visited[node] = true;
 
-    // perform xor with scc
-    if (scc == -1) scc = node;
-    else scc ^= node;
-
     // visit adjacent vertices
-    for (auto adj_node : adjacency_matrix.at(node + 1)){
-        if (adjacency_matrix[node][adj_node] == false) continue;
+    for (int index = 1; index < adjacency_matrix.size(); index++){
+        if (adjacency_matrix[node][index] == false) continue;
         else{
-            if (visited[adj_node] == false){
-                DFS_matrix_a_scc(adjacency_matrix, visited, adj_node, scc);
-                break;
+            if (visited[index] == false){
+                result ^= DFS_matrix_a_scc(adjacency_matrix, visited, index);
             } 
-        }
+        }        
     }
+
+    return result;
 }
 
 int DFS_list_a_scc(vector<Node *> &adjacency_list, vector<bool> &visited, int node){
@@ -259,7 +272,6 @@ void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> 
 
     // initialize time_vector
     vector<int> time_vector(adjacency_matrix.size(), INT_MAX);
-    vector<int> time_vector_T(adjacency_matrix.size(), INT_MAX);
 
     // initialize node_vector
     vector<int> reverse_node_vector;
@@ -273,15 +285,9 @@ void strong_matrix(vector<vector<bool>> &adjacency_matrix, vector<vector<bool>> 
     // run DFS on G_T -> create SCC
     for (int index = 1; index < reverse_node_vector.size(); index++){
         // if not visited
-        if (visited_T[index] == false){
-            // initialize scc value(xor of scc nodes)
-            int scc = -1;
-            
+        if (!visited_T[reverse_node_vector[index]]){
             // perform DFS
-            DFS_matrix_a_scc(adjacency_matrix_T,visited_T, index, scc);
-            
-            // push back result
-            result.push_back(scc);
+            result.push_back(DFS_matrix_a_scc(adjacency_matrix_T, visited_T, reverse_node_vector[index]));
         }
     }
 
@@ -395,7 +401,7 @@ int main(int argc, char *argv[]){
                 int to_node = stoi(buf.substr(buf.find(' ') + 1));
                 // fill matrix
                 adjacency_matrix[from_node][to_node] = true;
-                adjacency_matrix[to_node][from_node] = true;
+                adjacency_matrix_T[to_node][from_node] = true;
             }
             
             // run algorithm
