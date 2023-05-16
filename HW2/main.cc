@@ -403,7 +403,7 @@ int main(int argc, char *argv[]){
         // adjacency-matrix
         if (stoi(argv[1]) == 1){
             // clock start
-            auto start = chrono::high_resolution_clock::now();
+            //auto start = chrono::high_resolution_clock::now();
 
             // declare adjacency-matrix and transpose
             vector<vector<bool>> adjacency_matrix(node_cnt + 1, vector<bool>(node_cnt + 1, false));
@@ -424,13 +424,13 @@ int main(int argc, char *argv[]){
             strong_matrix(adjacency_matrix, adjacency_matrix_T, result);
 
             // clock end
-            auto stop = chrono::high_resolution_clock::now();
+            //auto stop = chrono::high_resolution_clock::now();
 
             // get duration
-            auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+            //auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
             // print clock
-            cout << duration.count() << " microseconds" << endl;
+            //cout << duration.count() << " microseconds" << endl;
 
             // open output file
             fstream output_file;
@@ -452,7 +452,7 @@ int main(int argc, char *argv[]){
         // adjacency-list
         else if (stoi(argv[1]) == 2){
             // clock start
-            auto start = chrono::high_resolution_clock::now();
+            //auto start = chrono::high_resolution_clock::now();
 
             // declare adjacency-list and transpose
             vector<Node*> adjacency_list(node_cnt + 1, NULL);
@@ -483,13 +483,13 @@ int main(int argc, char *argv[]){
             strong_list(adjacency_list, adjacency_list_T, result);
 
             // clock end
-            auto stop = chrono::high_resolution_clock::now();
+            //auto stop = chrono::high_resolution_clock::now();
 
             // get duration
-            auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+            //auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
             // print clock
-            cout << duration.count() << " microseconds" << endl;
+            //cout << duration.count() << " microseconds" << endl;
 
             // open output file
             fstream output_file;
@@ -511,7 +511,7 @@ int main(int argc, char *argv[]){
         // adjacency-array
         else if (stoi(argv[1]) == 3){
             // clock start
-            auto start = chrono::high_resolution_clock::now();
+            //auto start = chrono::high_resolution_clock::now();
 
             // declare adjacency_array and transpose
             vector<Node_Array*> adjacency_array(node_cnt + 1);
@@ -538,13 +538,13 @@ int main(int argc, char *argv[]){
             strong_array(adjacency_array, adjacency_array_T, result);
 
             // clock end
-            auto stop = chrono::high_resolution_clock::now();
+            //auto stop = chrono::high_resolution_clock::now();
 
             // get duration
-            auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+            //auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
             // print clock
-            cout << duration.count() << " microseconds" << endl;
+            //cout << duration.count() << " microseconds" << endl;
 
             // open output file
             fstream output_file;
