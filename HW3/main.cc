@@ -8,11 +8,32 @@
 
 using namespace std;
 
-int iterativeSolve(vector<vector<char>> board){
+// Check queen placable
+bool canPlace(vector<vector<char>> &board, int x, int y) {
+    // Check queen existing in same column
+    for (int row = 1; row < board.size(); row++) {
+        if (board[row][y] == 'Q') return false;
+    }
+
+    // Check if there is a queen in the same diagonal
+    for (int i = 1; i < board.size(); i++) {
+        if (x - i >= 0 && y - i >= 0 && board[x - i][y - i] == 'Q') return false; // Check upper-left diagonal
+        if (x - i >= 0 && y + i < board.size() && board[x - i][y + i] == 'Q') return false; // Check upper-right diagonal
+        if (x + i < board.size() && y - i >= 0 && board[x + i][y - i] == 'Q') return false; // Check lower-left diagonal
+        if (x + i < board.size() && y + i < board.size() && board[x + i][y + i] == 'Q') return false; // Check lower-right diagonal
+    }
+
+    // Check if the position is a hole
+    if (board[x][y] == 'X') return false;
+
+    return true;
+}
+
+int iterativeSolve(vector<vector<char>> &board){
     return 0;
 }
 
-int recursiveSolve(vector<vector<char>> board){
+int recursiveSolve(vector<vector<char>> &board){
     return 0;
 }
 
