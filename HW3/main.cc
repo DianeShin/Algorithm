@@ -8,10 +8,17 @@
 
 using namespace std;
 
+int iterativeSolve(vector<vector<char>> board){
+    return 0;
+}
+
+int recursiveSolve(vector<vector<char>> board){
+    return 0;
+}
+
 int main(int argc, char *argv[]){
     string buf = "";
     int result;
-    std::vector<std::pair<int, int>> hole_vec;
 
     // check arg cnt
     if (argc == 4){
@@ -29,6 +36,9 @@ int main(int argc, char *argv[]){
         // clear buffer string
         buf.clear();
 
+        // declare board
+        vector<vector<char>> board(board_size+1, vector<char>(board_size+1, '.'));
+
         // fetch hole location
         while(getline(input_file, buf)){
             // process the holes
@@ -36,7 +46,7 @@ int main(int argc, char *argv[]){
             int y = stoi(buf.substr(buf.find(' ') + 1));
 
             // save hole
-            hole_vec.push_back(make_pair(x,y));
+            board[x][y] = 'X';
         }
         
         // close input file
@@ -46,6 +56,9 @@ int main(int argc, char *argv[]){
         if (stoi(argv[1]) == 1){
             // clock start
             auto start = chrono::high_resolution_clock::now();
+
+            // run algorithm
+            result = iterativeSolve(board);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
@@ -74,6 +87,9 @@ int main(int argc, char *argv[]){
         if (stoi(argv[1]) == 1){
             // clock start
             auto start = chrono::high_resolution_clock::now();
+
+            // run algorithm
+            result = recursiveSolve(board);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
