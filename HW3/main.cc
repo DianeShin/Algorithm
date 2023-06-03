@@ -8,7 +8,7 @@
 #include <iostream>
 
 using namespace std;
-
+/*
 void print_vect(vector<char>& vec){
     for (int i = 1; i < vec.size(); i++){
         cout << vec[i] << ' ';
@@ -20,9 +20,10 @@ void print_board(vector<vector<char>> &vec){
         print_vect(vec[i]);
     }
 }
+*/
 
 // Check queen placable
-bool canPlace(vector<vector<char>>& board, int x, int y) {
+bool canPlace(vector<vector<char>> &board, int x, int y) {
     // Check if the position is a hole
     if (board[x][y] == 'X') return false;
 
@@ -32,20 +33,8 @@ bool canPlace(vector<vector<char>>& board, int x, int y) {
         else if (board[x][col] == 'Q') return false;
     }
 
-    // Check if queen at right
-    for (int col = y + 1; col < board.size(); col++) {
-        if (board[x][col] == 'X') break;
-        else if (board[x][col] == 'Q') return false;
-    }
-
     // Check if queen at up
     for (int row = x - 1; row >= 1; row--) {
-        if (board[row][y] == 'X') break;
-        else if (board[row][y] == 'Q') return false;
-    }
-
-    // Check if queen at bottom
-    for (int row = x + 1; row < board.size(); row++) {
         if (board[row][y] == 'X') break;
         else if (board[row][y] == 'Q') return false;
     }
@@ -62,23 +51,11 @@ bool canPlace(vector<vector<char>>& board, int x, int y) {
         else if (board[row][col] == 'Q') return false;
     }
 
-    // Check if queen at left-bottom diagonal
-    for (int row = x + 1, col = y - 1; row < board.size() && col >= 1; row++, col--) {
-        if (board[row][col] == 'X') break;
-        else if (board[row][col] == 'Q') return false;
-    }
-
-    // Check if queen at right-bottom diagonal
-    for (int row = x + 1, col = y + 1; row < board.size() && col < board.size(); row++, col++) {
-        if (board[row][col] == 'X') break;
-        else if (board[row][col] == 'Q') return false;
-    }
-
     // can be placed.
     return true;
 }
 
-int iterativeSolve(vector<vector<char>>& board) {
+int iterativeSolve(vector<vector<char>> &board) {
     int height = board.size()-1;
     int count = 0;
 
@@ -197,6 +174,7 @@ int main(int argc, char *argv[]){
 
         // 1. iterative backtracking
         if (stoi(argv[1]) == 1){
+            /*
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
@@ -211,6 +189,10 @@ int main(int argc, char *argv[]){
 
             // print clock
             cout << duration.count() << " microseconds" << endl;
+            */
+
+            // print result
+            result = iterativeSolve(board);
 
             // open output file
             fstream output_file;
@@ -228,6 +210,7 @@ int main(int argc, char *argv[]){
 
         // 2. recursive backtracking
         if (stoi(argv[1]) == 2){
+            /*
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
@@ -242,6 +225,10 @@ int main(int argc, char *argv[]){
 
             // print clock
             cout << duration.count() << " microseconds" << endl;
+            */
+
+            // print result
+            result = recursiveSolve(board, 1, 1, 0);
 
             // open output file
             fstream output_file;
