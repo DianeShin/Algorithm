@@ -23,7 +23,7 @@ void print_board(vector<vector<char>> &vec){
 */
 
 // Check queen placable
-bool canPlace(vector<vector<char>> &board, int x, int y) {
+bool canPlace(char board[14][14], int x, int y, int N) {
     // Check if the position is a hole
     if (board[x][y] == 'X') return false;
 
@@ -46,7 +46,7 @@ bool canPlace(vector<vector<char>> &board, int x, int y) {
     }
 
     // Check if queen at right-top diagonal
-    for (int row = x - 1, col = y + 1; row >= 1 && col < board.size(); row--, col++) {
+    for (int row = x - 1, col = y + 1; row >= 1 && col < N+1; row--, col++) {
         if (board[row][col] == 'X') break;
         else if (board[row][col] == 'Q') return false;
     }
@@ -55,8 +55,7 @@ bool canPlace(vector<vector<char>> &board, int x, int y) {
     return true;
 }
 
-int iterativeSolve(vector<vector<char>> &board) {
-    int height = board.size()-1;
+int iterativeSolve(char board[14][14], int N) {
     int count = 0;
 
     stack<pair<int, int>> positions;
@@ -65,9 +64,9 @@ int iterativeSolve(vector<vector<char>> &board) {
     int queenCount = 0;  // Count of placed queens
 
     while (true) {
-        if (row > height) {
+        if (row > N) {
             // All queens are placed
-            if (queenCount == height) {
+            if (queenCount == N) {
                 count++;
             }
 
@@ -83,12 +82,12 @@ int iterativeSolve(vector<vector<char>> &board) {
             column = positions.top().second + 1;
             positions.pop();
             queenCount--;
-        } else if (column > height) {
+        } else if (column > N) {
             // Reached the end of the row, move to the next row
             row++;
             column = 1;
         } else {
-            if (canPlace(board, row, column)) {
+            if (canPlace(board, row, column, N)) {
                 // Place the queen at the current position
                 board[row][column] = 'Q';
                 positions.push({row, column});
@@ -103,27 +102,27 @@ int iterativeSolve(vector<vector<char>> &board) {
     return count;
 }
 
-int recursiveSolve(vector<vector<char>> &board, int row, int column, int queen_cnt) {
+int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N) {
     // Base case: all queens are placed
-    if (queen_cnt == board.size()-1) {
+    if (queen_cnt == N) {
         return 1;
     }
 
     int count = 0;
 
 
-    for (int i = row; i < board.size(); i++) {
-        for (int j = (i == row) ? column : 1; j < board.size(); j++) {
-            if (canPlace(board, i, j)) {
+    for (int i = row; i < N+1; i++) {
+        for (int j = (i == row) ? column : 1; j < N+1; j++) {
+            if (canPlace(board, i, j, N)) {
                 // Place the queen at the current position
                 board[i][j] = 'Q';
 
                 // Recursive call to place the remaining queens and accumulate the count
-                if (j == board.size()-1){
-                    count += recursiveSolve(board, i+1, 1, queen_cnt+1);
+                if (j == N){
+                    count += recursiveSolve(board, i+1, 1, queen_cnt+1, N);
                 }
                 else{
-                    count += recursiveSolve(board, i, j+1, queen_cnt+1);
+                    count += recursiveSolve(board, i, j+1, queen_cnt+1, N);
                 }                
 
                 // Backtrack: remove the queen from the current position
@@ -134,7 +133,6 @@ int recursiveSolve(vector<vector<char>> &board, int row, int column, int queen_c
 
     return count;
 }
-
 
 int main(int argc, char *argv[]){
     string buf = "";
@@ -157,7 +155,7 @@ int main(int argc, char *argv[]){
         buf.clear();
 
         // declare board
-        vector<vector<char>> board(board_size+1, vector<char>(board_size+1, '.'));
+        char board[14][14] = {'.'};
 
         // fetch hole location
         while(getline(input_file, buf)){
@@ -192,7 +190,7 @@ int main(int argc, char *argv[]){
             */
 
             // print result
-            result = iterativeSolve(board);
+            result = iterativeSolve(board, board_size);
 
             // open output file
             fstream output_file;
@@ -228,7 +226,7 @@ int main(int argc, char *argv[]){
             */
 
             // print result
-            result = recursiveSolve(board, 1, 1, 0);
+            result = recursiveSolve(board, 1, 1, 0, board_size);
 
             // open output file
             fstream output_file;
