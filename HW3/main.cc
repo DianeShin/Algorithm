@@ -121,19 +121,33 @@ int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N
 
     int count = 0;
     
-    for (int i = row; i < N+1; i++) {
-        for (int j = (i == row) ? column : 1; j < N+1; j++) {
+    for (int i = row; i <= N; i++) {
+        for (int j = (i == row) ? column : 1; j <= N; j++) {
             if (canPlace(board, i, j, N)) {
                 // Place the queen at the current position
                 board[i][j] = 'Q';
+                int i_cop = i, j_cop = j+1;
 
-                // Recursive call to place the remaining queens and accumulate the count
-                if (j == N){
-                    count += recursiveSolve(board, i+1, 1, queen_cnt+1, N);
-                }
-                else{
-                    count += recursiveSolve(board, i, j+1, queen_cnt+1, N);
-                }                
+                while (true){
+                    // column exceed -> next row, break loop
+                    if (j > N){
+                        i_cop++; j_cop = 1;
+                        break;
+                    }
+                    else{
+                        // found hole -> next column is worth trying.
+                        if (board[i_cop][j_cop] == 'X'){
+                            j_cop++;
+                            break;
+                        }
+                        // found a dot -> scan next column
+                        else{
+                            j_cop++;
+                        }
+                    }
+                } 
+                // recurrsive call
+                count += recursiveSolve(board, i_cop, j_cop, queen_cnt+1, N);
 
                 // Backtrack: remove the queen from the current position
                 board[i][j] = '.';
@@ -157,9 +171,8 @@ int main(int argc, char *argv[]){
         // read first line
         getline(input_file, buf);
 
-        // fetch node_cnt
+        // fetch board_size
         int board_size = stoi(buf.substr(0, buf.find(' ')));
-        int hole_cnt = stoi(buf.substr(buf.find(' ') + 1));
 
         // clear buffer string
         buf.clear();
@@ -169,12 +182,8 @@ int main(int argc, char *argv[]){
 
         // fetch hole location
         while(getline(input_file, buf)){
-            // process the holes
-            int x = stoi(buf.substr(0, buf.find(' ')));
-            int y = stoi(buf.substr(buf.find(' ') + 1));
-
             // save hole
-            board[x][y] = 'X';
+            board[stoi(buf.substr(0, buf.find(' ')))][stoi(buf.substr(buf.find(' ') + 1))] = 'X';
         }
         
         // close input file
@@ -204,10 +213,10 @@ int main(int argc, char *argv[]){
 
             // open output file
             fstream output_file;
-            output_file.open(argv[3], fstream::in | fstream::out | fstream::trunc);
+            output_file.open(argv[3], fstream::out | fstream::app);
 
             // write result
-            output_file << result << endl;
+            output_file << result;
 
             // close file
             output_file.close();
@@ -240,10 +249,10 @@ int main(int argc, char *argv[]){
 
             // open output file
             fstream output_file;
-            output_file.open(argv[3], fstream::in | fstream::out | fstream::trunc);
+            output_file.open(argv[3], fstream::out | fstream::app);
 
             // write result
-            output_file << result << endl;
+            output_file << result;
 
             // close file
             output_file.close();
