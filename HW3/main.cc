@@ -8,19 +8,6 @@
 #include <iostream>
 
 using namespace std;
-/*
-void print_vect(vector<char>& vec){
-    for (int i = 1; i < vec.size(); i++){
-        cout << vec[i] << ' ';
-    }
-    cout << endl;
-}
-void print_board(vector<vector<char>> &vec){
-    for (int i = 1; i < vec.size(); i++){
-        print_vect(vec[i]);
-    }
-}
-*/
 
 // Check queen placable
 bool canPlace(char board[14][14], int x, int y, int N) {
@@ -92,10 +79,33 @@ int iterativeSolve(char board[14][14], int N) {
                 board[row][column] = 'Q';
                 positions.push({row, column});
                 queenCount++;
+
+                // move 1 column further
+                column++;
+                
+                // move to next possible location
+                while (true){
+                    // column exceed -> next row, break loop
+                    if (column > N){
+                        break;
+                    }
+                    else{
+                        // found hole -> next column is worth trying.
+                        if (board[row][column] == 'X'){
+                            column++;
+                            break;
+                        }
+                        // found a dot -> scan next column
+                        else{
+                            column++;
+                        }
+                    }
+                }  
             }
-            
-            // Move to the next column
-            column++;
+            // queen put fail -> next column
+            else{
+                column++;
+            }
         }
     }
 
