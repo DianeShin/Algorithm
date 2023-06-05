@@ -2,9 +2,9 @@
 #include <stack>
 #include <fstream>
 
-//#include <sstream>
-//#include <chrono>
-//#include <iostream>
+#include <sstream>
+#include <chrono>
+#include <iostream>
 
 using namespace std;
 
@@ -119,7 +119,7 @@ int iterativeSolve(char board[14][14], int N) {
     return count;
 }
 
-int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N) {
+int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N, bool hole[14]) {
     // Base case: all queens are placed
     if (queen_cnt == N) {
         return 1;
@@ -134,12 +134,18 @@ int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N
                 board[i][j] = 'Q';
 
                 // Recursive call to place the remaining queens and accumulate the count
-                if (j == N){
-                    count += recursiveSolve(board, i+1, 1, queen_cnt+1, N);
+                if (hole[i] == true){                    
+                    if (j == N){
+                        count += recursiveSolve(board, i+1, 1, queen_cnt+1, N, hole);
+                    }
+                    else{
+                        count += recursiveSolve(board, i, j+1, queen_cnt+1, N, hole);
+                    }                      
                 }
-                else{
-                    count += recursiveSolve(board, i, j+1, queen_cnt+1, N);
-                }  
+                else{ // no hole -> can't put in same row.
+                    count += recursiveSolve(board, i+1, 1, queen_cnt+1, N, hole);
+                }
+
 
                 // Backtrack: remove the queen from the current position
                 board[i][j] = '.';
@@ -171,11 +177,13 @@ int main(int argc, char *argv[]){
 
         // declare board
         char board[14][14] = {'.'};
-
+        bool hole[14] = {false};
         // fetch hole location
         while(getline(input_file, buf)){
+            int x = stoi(buf.substr(0, buf.find(' ')));
             // save hole
-            board[stoi(buf.substr(0, buf.find(' ')))][stoi(buf.substr(buf.find(' ') + 1))] = 'X';
+            board[x][stoi(buf.substr(buf.find(' ') + 1))] = 'X';
+            hole[x] = true;
         }
         
         // close input file
@@ -219,12 +227,12 @@ int main(int argc, char *argv[]){
 
         // 2. recursive backtracking
         if (stoi(argv[1]) == 2){
-            /*
+            
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
             // run algorithm
-            result = recursiveSolve(board, 1, 1, 0);
+            result = recursiveSolve(board, 1, 1, 0, board_size, hole);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
@@ -234,10 +242,10 @@ int main(int argc, char *argv[]){
 
             // print clock
             cout << duration.count() << " microseconds" << endl;
-            */
+            
 
             // print result
-            result = recursiveSolve(board, 1, 1, 0, board_size);
+            //result = recursiveSolve(board, 1, 1, 0, board_size, hole);
 
             // open output file
             fstream output_file;
