@@ -227,7 +227,7 @@ int main(int argc, char *argv[]){
 
         // 2. recursive backtracking
         if (stoi(argv[1]) == 2){
-            
+            /*
             // clock start
             auto start = chrono::high_resolution_clock::now();
 
@@ -242,10 +242,10 @@ int main(int argc, char *argv[]){
 
             // print clock
             cout << duration.count() << " microseconds" << endl;
-            
+            */
 
             // print result
-            //result = recursiveSolve(board, 1, 1, 0, board_size, hole);
+            result = recursiveSolve(board, 1, 1, 0, board_size, hole);
 
             // open output file
             fstream output_file;
