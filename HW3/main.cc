@@ -16,26 +16,26 @@ bool canPlace(char board[14][14], int x, int y, int N) {
 
     // Check if queen at left
     for (int col = y - 1; col >= 1; col--) {
-        if (board[x][col] == 'X') break;
-        else if (board[x][col] == 'Q') return false;
+        if (board[x][col] == 'Q') return false;
+        else if (board[x][col] == 'X') break;
     }
 
     // Check if queen at up
     for (int row = x - 1; row >= 1; row--) {
-        if (board[row][y] == 'X') break;
-        else if (board[row][y] == 'Q') return false;
+        if (board[row][y] == 'Q') return false;
+        else if (board[row][y] == 'X') break;
     }
 
     // Check if queen at left-top diagonal
     for (int row = x - 1, col = y - 1; row >= 1 && col >= 1; row--, col--) {
-        if (board[row][col] == 'X') break;
-        else if (board[row][col] == 'Q') return false;
+        if (board[row][col] == 'Q') return false;
+        else if (board[row][col] == 'X') break;
     }
 
     // Check if queen at right-top diagonal
     for (int row = x - 1, col = y + 1; row >= 1 && col < N+1; row--, col++) {
-        if (board[row][col] == 'X') break;
-        else if (board[row][col] == 'Q') return false;
+        if (board[row][col] == 'Q') return false;
+        else if (board[row][col] == 'X') break;
     }
 
     // can be placed.
@@ -87,6 +87,7 @@ int iterativeSolve(char board[14][14], int N) {
                 while (true){
                     // column exceed -> next row, break loop
                     if (column > N){
+                        row++; column = 1;
                         break;
                     }
                     else{
@@ -119,8 +120,7 @@ int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N
     }
 
     int count = 0;
-
-
+    
     for (int i = row; i < N+1; i++) {
         for (int j = (i == row) ? column : 1; j < N+1; j++) {
             if (canPlace(board, i, j, N)) {
