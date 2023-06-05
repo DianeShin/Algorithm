@@ -51,11 +51,10 @@ int iterativeSolve(char board[14][14], int N) {
     int queenCount = 0;  // Count of placed queens
 
     while (true) {
-        if (row > N) {
-            // All queens are placed
-            if (queenCount == N) {
-                count++;
-            }
+        // end reached
+        if (queenCount == N || row > N) {
+            // only increment count if queenCount == N
+            if (queenCount == N) count++;
 
             // Backtrack to find more solutions
             if (positions.empty()) {
@@ -69,7 +68,8 @@ int iterativeSolve(char board[14][14], int N) {
             column = positions.top().second + 1;
             positions.pop();
             queenCount--;
-        } else if (column > N) {
+        }
+        else if (column > N) {
             // Reached the end of the row, move to the next row
             row++;
             column = 1;
@@ -82,7 +82,7 @@ int iterativeSolve(char board[14][14], int N) {
 
                 // move 1 column further
                 column++;
-                
+
                 // move to next possible location
                 while (true){
                     // column exceed -> next row, break loop
