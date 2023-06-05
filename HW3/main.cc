@@ -51,8 +51,14 @@ int iterativeSolve(char board[14][14], int N) {
     int queenCount = 0;  // Count of placed queens
 
     while (true) {
+        if (queenCount == 0 && board[row][column] == '.'){
+            // Place the queen at the current position
+            board[row][column] = 'Q';
+            positions.push({row, column});
+            queenCount++;            
+        }
         // end reached
-        if (queenCount == N || row > N) {
+        else if (queenCount == N || row > N) {
             // only increment count if queenCount == N
             if (queenCount == N) count++;
 
