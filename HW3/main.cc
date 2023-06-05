@@ -1,46 +1,70 @@
 #include <string>
-#include <vector>
 #include <stack>
 #include <fstream>
-#include <sstream>
-#include <chrono>
 
-#include <iostream>
+//#include <sstream>
+//#include <chrono>
+//#include <iostream>
 
 using namespace std;
 
-// Check queen placable
 bool canPlace(char board[14][14], int x, int y, int N) {
     // Check if the position is a hole
     if (board[x][y] == 'X') return false;
 
     // Check if queen at left
+    bool hasQueen = false;
     for (int col = y - 1; col >= 1; col--) {
-        if (board[x][col] == 'Q') return false;
-        else if (board[x][col] == 'X') break;
+        if (board[x][col] == 'Q') {
+            hasQueen = true;
+            break;
+        } else if (board[x][col] == 'X') {
+            break;
+        }
     }
+    if (hasQueen) return false;
 
     // Check if queen at up
+    hasQueen = false;
     for (int row = x - 1; row >= 1; row--) {
-        if (board[row][y] == 'Q') return false;
-        else if (board[row][y] == 'X') break;
+        if (board[row][y] == 'Q') {
+            hasQueen = true;
+            break;
+        } else if (board[row][y] == 'X') {
+            break;
+        }
     }
+    if (hasQueen) return false;
 
     // Check if queen at left-top diagonal
+    hasQueen = false;
     for (int row = x - 1, col = y - 1; row >= 1 && col >= 1; row--, col--) {
-        if (board[row][col] == 'Q') return false;
-        else if (board[row][col] == 'X') break;
+        if (board[row][col] == 'Q') {
+            hasQueen = true;
+            break;
+        } else if (board[row][col] == 'X') {
+            break;
+        }
     }
+    if (hasQueen) return false;
 
     // Check if queen at right-top diagonal
+    hasQueen = false;
     for (int row = x - 1, col = y + 1; row >= 1 && col < N+1; row--, col++) {
-        if (board[row][col] == 'Q') return false;
-        else if (board[row][col] == 'X') break;
+        if (board[row][col] == 'Q') {
+            hasQueen = true;
+            break;
+        } else if (board[row][col] == 'X') {
+            break;
+        }
     }
+    if (hasQueen) return false;
 
     // can be placed.
     return true;
 }
+
+
 
 int iterativeSolve(char board[14][14], int N) {
     int count = 0;
@@ -164,7 +188,7 @@ int main(int argc, char *argv[]){
             auto start = chrono::high_resolution_clock::now();
 
             // run algorithm
-            result = iterativeSolve(board);
+            result = iterativeSolve(board, board_size);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
