@@ -213,7 +213,7 @@ int main(int argc, char *argv[]){
 
             // open output file
             fstream output_file;
-            output_file.open(argv[3], fstream::out | fstream::app);
+            output_file.open(argv[3], fstream::in | fstream::out | fstream::trunc);
 
             // write result
             output_file << result;
@@ -249,7 +249,7 @@ int main(int argc, char *argv[]){
 
             // open output file
             fstream output_file;
-            output_file.open(argv[3], fstream::out | fstream::app);
+            output_file.open(argv[3], fstream::in | fstream::out | fstream::trunc);
 
             // write result
             output_file << result;
