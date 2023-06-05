@@ -80,33 +80,8 @@ int iterativeSolve(char board[14][14], int N) {
                 positions.push({row, column});
                 queenCount++;
 
-                // move 1 column further
-                column++;
-
-                // move to next possible location
-                while (true){
-                    // column exceed -> next row, break loop
-                    if (column > N){
-                        row++; column = 1;
-                        break;
-                    }
-                    else{
-                        // found hole -> next column is worth trying.
-                        if (board[row][column] == 'X'){
-                            column++;
-                            break;
-                        }
-                        // found a dot -> scan next column
-                        else{
-                            column++;
-                        }
-                    }
-                }  
             }
-            // queen put fail -> next column
-            else{
-                column++;
-            }
+            column++;
         }
     }
 
@@ -126,28 +101,14 @@ int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N
             if (canPlace(board, i, j, N)) {
                 // Place the queen at the current position
                 board[i][j] = 'Q';
-                int i_cop = i, j_cop = j+1;
 
-                while (true){
-                    // column exceed -> next row, break loop
-                    if (j > N){
-                        i_cop++; j_cop = 1;
-                        break;
-                    }
-                    else{
-                        // found hole -> next column is worth trying.
-                        if (board[i_cop][j_cop] == 'X'){
-                            j_cop++;
-                            break;
-                        }
-                        // found a dot -> scan next column
-                        else{
-                            j_cop++;
-                        }
-                    }
-                } 
-                // recurrsive call
-                count += recursiveSolve(board, i_cop, j_cop, queen_cnt+1, N);
+                // Recursive call to place the remaining queens and accumulate the count
+                if (j == N){
+                    count += recursiveSolve(board, i+1, 1, queen_cnt+1, N);
+                }
+                else{
+                    count += recursiveSolve(board, i, j+1, queen_cnt+1, N);
+                }  
 
                 // Backtrack: remove the queen from the current position
                 board[i][j] = '.';
