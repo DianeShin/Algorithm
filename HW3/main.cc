@@ -2,72 +2,35 @@
 #include <stack>
 #include <fstream>
 
-#include <sstream>
-#include <chrono>
-#include <iostream>
+//#include <sstream>
+//#include <chrono>
+//#include <iostream>
 
 using namespace std;
 
-void print_board(char board[14][14], int N, fstream &debug_file){
-    for (int i = 1; i <= N; i++){
-        for (int p = 1; p <= N; p++){
-            debug_file << board[i][p] << ' ';
-        }
-        debug_file << endl;
-    }
-}
 bool canPlace(char board[14][14], int x, int y, int N) {
     // Check if the position is a hole
     if (board[x][y] == 'X') return false;
-
     // Check if queen at left
-    bool hasQueen = false;
     for (int col = y - 1; col >= 1; col--) {
-        if (board[x][col] == 'Q') {
-            hasQueen = true;
-            break;
-        } else if (board[x][col] == 'X') {
-            break;
-        }
+        if (board[x][col] == 'Q') return false;
+        else if (board[x][col] == 'X') break;
     }
-    if (hasQueen) return false;
-
     // Check if queen at up
-    hasQueen = false;
     for (int row = x - 1; row >= 1; row--) {
-        if (board[row][y] == 'Q') {
-            hasQueen = true;
-            break;
-        } else if (board[row][y] == 'X') {
-            break;
-        }
+        if (board[row][y] == 'Q') return false;
+        else if (board[row][y] == 'X') break;
     }
-    if (hasQueen) return false;
-
     // Check if queen at left-top diagonal
-    hasQueen = false;
     for (int row = x - 1, col = y - 1; row >= 1 && col >= 1; row--, col--) {
-        if (board[row][col] == 'Q') {
-            hasQueen = true;
-            break;
-        } else if (board[row][col] == 'X') {
-            break;
-        }
+        if (board[row][col] == 'Q') return false;
+        else if (board[row][col] == 'X') break;
     }
-    if (hasQueen) return false;
-
     // Check if queen at right-top diagonal
-    hasQueen = false;
     for (int row = x - 1, col = y + 1; row >= 1 && col < N+1; row--, col++) {
-        if (board[row][col] == 'Q') {
-            hasQueen = true;
-            break;
-        } else if (board[row][col] == 'X') {
-            break;
-        }
+        if (board[row][col] == 'Q') return false;
+        else if (board[row][col] == 'X') break;
     }
-    if (hasQueen) return false;
-
     // can be placed.
     return true;
 }
@@ -261,7 +224,7 @@ int main(int argc, char *argv[]){
             */
 
             // print result
-            result = recursiveSolve(board, 1, 1, 0, board_size);
+            //result = recursiveSolve(board, 1, 1, 0, board_size);
 
             // open output file
             fstream output_file;
