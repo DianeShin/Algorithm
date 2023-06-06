@@ -9,7 +9,7 @@ using namespace std;
 
 int main() {
     // Open the output file
-    ofstream output_file("2.in");
+    ofstream output_file("3.in");
 
     // Set random seed
     random_device rd;

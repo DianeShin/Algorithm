@@ -2,13 +2,13 @@
 #include <stack>
 #include <fstream>
 
-//#include <sstream>
-//#include <chrono>
-//#include <iostream>
+#include <sstream>
+#include <chrono>
+#include <iostream>
 
 using namespace std;
 
-bool canPlace(char board[14][14], int x, int y, int N) {
+bool canPlace(const char board[14][14], int x, int y, int N) {
     // Check if the position is a hole
     if (board[x][y] == 'X') return false;
     // Check if queen at left
