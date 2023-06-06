@@ -149,20 +149,11 @@ int main(int argc, char *argv[]){
         buf.clear();
 
         // declare board
-        char board[14][14] = {'.'};
-        for (int i = 1; i <= board_size; i++) {
-            for (int j = 1; j <= board_size; j++) {
-                board[i][j] = '.';
-            }
-        }
+        char board[14][14];
 
-        bool hole[14] = {false};
         // fetch hole location
         while(getline(input_file, buf)){
-            int x = stoi(buf.substr(0, buf.find(' ')));
-            // save hole
-            board[x][stoi(buf.substr(buf.find(' ') + 1))] = 'X';
-            hole[x] = true;
+            board[stoi(buf.substr(0, buf.find(' ')))][stoi(buf.substr(buf.find(' ') + 1))] = 'X';
         }
         
         // close input file
@@ -224,7 +215,7 @@ int main(int argc, char *argv[]){
             */
 
             // print result
-            //result = recursiveSolve(board, 1, 1, 0, board_size);
+            result = recursiveSolve(board, 1, 1, 0, board_size);
 
             // open output file
             fstream output_file;
