@@ -149,8 +149,13 @@ int main(int argc, char *argv[]){
         buf.clear();
 
         // declare board
-        char board[14][14];
-
+        char board[14][14] = {'.'};
+        for (int i = 1; i <= board_size; i++) {
+            for (int j = 1; j <= board_size; j++) {
+                board[i][j] = '.';
+            }
+        }
+        
         // fetch hole location
         while(getline(input_file, buf)){
             board[stoi(buf.substr(0, buf.find(' ')))][stoi(buf.substr(buf.find(' ') + 1))] = 'X';
