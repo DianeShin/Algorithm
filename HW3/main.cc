@@ -8,14 +8,10 @@
 
 using namespace std;
 
-bool canPlace(const char board[14][14], int x, int y, int N) {
+// guarnateed that queen is not on left
+bool canPlace_opt(const char board[14][14], int x, int y, int N) {
     // Check if the position is a hole
     if (board[x][y] == 'X') return false;
-    // Check if queen at left
-    for (int col = y - 1; col >= 1; col--) {
-        if (board[x][col] == 'Q') return false;
-        else if (board[x][col] == 'X') break;
-    }
     // Check if queen at up
     for (int row = x - 1; row >= 1; row--) {
         if (board[row][y] == 'Q') return false;
@@ -35,8 +31,6 @@ bool canPlace(const char board[14][14], int x, int y, int N) {
     return true;
 }
 
-
-
 int iterativeSolve(char board[14][14], int N) {
     int count = 0;
 
@@ -51,7 +45,17 @@ int iterativeSolve(char board[14][14], int N) {
             board[row][column] = 'Q';
             positions.push({row, column});
             queenCount++;
-            column++;         
+            bool hole = false;
+            for (int inner_col = column; inner_col < N; inner_col++){
+                if (board[row][inner_col] == 'X'){
+                    column = inner_col+1;
+                    hole = true; break;
+                }               
+            }
+            if (!hole){
+                row++;
+                column = 1;
+            }       
         }
         // end reached
         else if (queenCount == N || row > N) {
@@ -76,14 +80,24 @@ int iterativeSolve(char board[14][14], int N) {
             row++;
             column = 1;
         } else {
-            if (canPlace(board, row, column, N)) {
+            if (canPlace_opt(board, row, column, N)) {
                 // Place the queen at the current position
                 board[row][column] = 'Q';
                 positions.push({row, column});
                 queenCount++;
-
+                bool hole = false;
+                for (int inner_col = column; inner_col < N; inner_col++){
+                    if (board[row][inner_col] == 'X'){
+                        column = inner_col+1;
+                        hole = true; break;
+                    }               
+                }
+                if (!hole){
+                    row++;
+                    column = 1;
+                }
             }
-            column++;
+            else column++;
         }
     }
 
@@ -102,7 +116,7 @@ int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N
 
     for (int col = column; col <= N; col++) {
         // Check if a queen can be placed at the current position
-        if (canPlace(board, row, col, N)) {
+        if (canPlace_opt(board, row, col, N)) {
             // Place the queen at the current position
             board[row][col] = 'Q';
             bool hole = false;
@@ -112,10 +126,6 @@ int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N
                     count += recursiveSolve(board, row, inner_col + 1, queen_cnt+1, N);
                     hole = true; break;
                 }               
-            }
-            if (!hole){
-                // Recursive call to place the remaining queens and accumulate the count
-                count += recursiveSolve(board, row + 1, 1, queen_cnt+1, N);                
             }
 
 
