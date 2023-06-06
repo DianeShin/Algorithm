@@ -127,7 +127,10 @@ int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N
                     hole = true; break;
                 }               
             }
-
+            if (!hole){
+                // Recursive call to place the remaining queens and accumulate the count
+                count += recursiveSolve(board, row + 1, 1, queen_cnt+1, N);                
+            }
 
             // Backtrack: remove the queen from the current position
             board[row][col] = '.';
