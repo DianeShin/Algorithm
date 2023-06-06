@@ -2,12 +2,20 @@
 #include <stack>
 #include <fstream>
 
-//#include <sstream>
-//#include <chrono>
-//#include <iostream>
+#include <sstream>
+#include <chrono>
+#include <iostream>
 
 using namespace std;
 
+void print_board(char board[14][14], int N, fstream &debug_file){
+    for (int i = 1; i <= N; i++){
+        for (int p = 1; p <= N; p++){
+            debug_file << board[i][p] << ' ';
+        }
+        debug_file << endl;
+    }
+}
 bool canPlace(char board[14][14], int x, int y, int N) {
     // Check if the position is a hole
     if (board[x][y] == 'X') return false;
@@ -119,39 +127,41 @@ int iterativeSolve(char board[14][14], int N) {
     return count;
 }
 
-int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N, bool hole[14]) {
-    // Base case: all queens are placed
+int recursiveSolve(char board[14][14], int row, int column, int queen_cnt, int N) {
+   // Base case: all queens are placed
     if (queen_cnt == N) {
         return 1;
     }
 
+    if (row > N) return 0;
+
     int count = 0;
-    
-    for (int i = row; i <= N; i++) {
-        for (int j = (i == row) ? column : 1; j <= N; j++) {
-            if (canPlace(board, i, j, N)) {
-                // Place the queen at the current position
-                board[i][j] = 'Q';
 
+    for (int col = column; col <= N; col++) {
+        // Check if a queen can be placed at the current position
+        if (canPlace(board, row, col, N)) {
+            // Place the queen at the current position
+            board[row][col] = 'Q';
+            bool hole = false;
+            // if hole exists, call for that position too.
+            for (int inner_col = col; inner_col < N; inner_col++){
+                if (board[row][inner_col] == 'X'){
+                    count += recursiveSolve(board, row, inner_col + 1, queen_cnt+1, N);
+                    hole = true; break;
+                }               
+            }
+            if (!hole){
                 // Recursive call to place the remaining queens and accumulate the count
-                if (hole[i] == true){                    
-                    if (j == N){
-                        count += recursiveSolve(board, i+1, 1, queen_cnt+1, N, hole);
-                    }
-                    else{
-                        count += recursiveSolve(board, i, j+1, queen_cnt+1, N, hole);
-                    }                      
-                }
-                else{ // no hole -> can't put in same row.
-                    count += recursiveSolve(board, i+1, 1, queen_cnt+1, N, hole);
-                }
+                count += recursiveSolve(board, row + 1, 1, queen_cnt+1, N);                
+            }
 
 
-                // Backtrack: remove the queen from the current position
-                board[i][j] = '.';
-            }            
+            // Backtrack: remove the queen from the current position
+            board[row][col] = '.';
         }
     }
+
+    count += recursiveSolve(board, row + 1, 1, queen_cnt, N);  // Continue search from next row
 
     return count;
 }
@@ -177,6 +187,12 @@ int main(int argc, char *argv[]){
 
         // declare board
         char board[14][14] = {'.'};
+        for (int i = 1; i <= board_size; i++) {
+            for (int j = 1; j <= board_size; j++) {
+                board[i][j] = '.';
+            }
+        }
+
         bool hole[14] = {false};
         // fetch hole location
         while(getline(input_file, buf)){
@@ -232,7 +248,7 @@ int main(int argc, char *argv[]){
             auto start = chrono::high_resolution_clock::now();
 
             // run algorithm
-            result = recursiveSolve(board, 1, 1, 0, board_size, hole);
+            result = recursiveSolve(board, 1, 1, 0, board_size);
 
             // clock end
             auto stop = chrono::high_resolution_clock::now();
@@ -245,7 +261,7 @@ int main(int argc, char *argv[]){
             */
 
             // print result
-            result = recursiveSolve(board, 1, 1, 0, board_size, hole);
+            result = recursiveSolve(board, 1, 1, 0, board_size);
 
             // open output file
             fstream output_file;
